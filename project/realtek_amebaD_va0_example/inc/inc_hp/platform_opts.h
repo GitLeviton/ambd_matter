@@ -11,6 +11,7 @@
 #if defined CONFIG_BT && CONFIG_BT
 #include "platform_opts_bt.h"
 #endif
+#include "Lev_Memory_Map.h"     // LEV-MOD 
 /*For MP mode setting*/
 //#define SUPPORT_MP_MODE		1
 
@@ -25,7 +26,7 @@
 #define LOG_HISTORY_LEN    5
 #endif
 #define CONFIG_ATCMD_MP				1 //support MP AT command
-#define SUPPORT_INTERACTIVE_MODE		0//on/off wifi_interactive_mode
+#define SUPPORT_INTERACTIVE_MODE		1//on/off wifi_interactive_mode	// LEV-MOD
 #define CONFIG_LOG_SERVICE_LOCK 0
 #endif
 
@@ -34,7 +35,7 @@
  */
 #if SUPPORT_INTERACTIVE_MODE
 #define CONFIG_INTERACTIVE_MODE     1
-#define CONFIG_INTERACTIVE_EXT   0
+#define CONFIG_INTERACTIVE_EXT   1	// LEV-MOD
 #else
 #define CONFIG_INTERACTIVE_MODE     0
 #define CONFIG_INTERACTIVE_EXT   0
@@ -99,10 +100,10 @@
  * 0x083FF000 -------------------- MATTER_FACTORY_DATA
  */
 
-#define UART_SETTING_SECTOR		0x001B6000  // 1K
-#define AP_SETTING_SECTOR		0x001B7000  // 1K
-#define FTL_PHY_PAGE_START_ADDR         0x001B8000  // 3K
-#define FAST_RECONNECT_DATA             0x001CB000  // 1K
+#define UART_SETTING_SECTOR		UART_SPI_ADDRESS//0x001B6000  // 1K  LEV-MOD
+//#define AP_SETTING_SECTOR		0x08623000//WIFI_CREDS_HOMEKIT_KEY_ADDRESS//0x001B7000  // 1K LEV-MOD
+#define FTL_PHY_PAGE_START_ADDR         BLE_FTL_ADDRESS//0x001B8000  // 3K LEV-MOD
+#define FAST_RECONNECT_DATA             WIFI_FASTCONNECT_ADDRESS//0x001CB000  // 1K LEV-MOD
 
 // DCT size : module size is 4k, module number is 4, the total module number is 4 + 0*4 = 4, the size is 4*4 = 16k,
 //            if backup enabled, the total module number is 4 + 1*4 = 8, the size is 4*8 = 32k;
@@ -111,21 +112,33 @@
 #define MATTER_KVS_ENABLE_WEAR_LEVELING 0
 
 // MATTER KVS (chip-factory, chip-config, chip-counters)
-#define MATTER_KVS_BEGIN_ADDR           0x001CC000  // 96K (4*24), DCT begin address of flash, ex: 0x100000 = 1M
-#define MATTER_KVS_MODULE_NUM           13           // max number of module
+#define MATTER_KVS_BEGIN_ADDR           LEV_MATTER_KVS_1//0x0063C000//0x001CC000  // 96K (4*24), DCT begin address of flash, ex: 0x100000 = 1M  LEV-MOD
+#define MATTER_KVS_MODULE_NUM           40           // max number of module
 #define MATTER_KVS_VARIABLE_NAME_SIZE   32          // max size of the variable name
 #define MATTER_KVS_VARIABLE_VALUE_SIZE  64+4          // max size of the variable value, +4 so it can store 64 bytes variable
                                                     // max value number in moudle = floor(4024 / (32 + 64 + 4)) = 40
                                                     
 // MATTER KVS2, for key length large than 64 (Fabric1 ~ FabricF)
-#define MATTER_KVS_BEGIN_ADDR2	        0x003B6000  // 20K (4*5)
-#define MATTER_KVS_MODULE_NUM2          6          // max number of module
+#define MATTER_KVS_BEGIN_ADDR2	        LEV_MATTER_KVS_2//0x00620000  // 20K (4*5)		// LEV-MOD
+#define MATTER_KVS_MODULE_NUM2          30          // max number of module
 #define MATTER_KVS_VARIABLE_NAME_SIZE2  32          // max size of the variable name
-#define MATTER_KVS_VARIABLE_VALUE_SIZE2 400+4        // max size of the variable value, +4 so it can store 400 bytes variable
-                                                    // max value number in moudle = floor(4024 / (32 + 400 + 4)) = 9
-// Matter Factory Data
-#define MATTER_FACTORY_DATA             0x003FF000 
+#define MATTER_KVS_VARIABLE_VALUE_SIZE2 400 + 4    // max size of the variable value
+                                                    // max value number in moudle = 4024 / (32 + 1860+4) = 2
 
+/*
+#define MATTER_KVS_BEGIN_ADDR           0x003B6000//0x001CC000  // 96K (4*24), DCT begin address of flash, ex: 0x100000 = 1M  LEV-MOD
+#define MATTER_KVS_MODULE_NUM           40           // max number of module
+#define MATTER_KVS_VARIABLE_NAME_SIZE   32          // max size of the variable name
+#define MATTER_KVS_VARIABLE_VALUE_SIZE  64 + 4      // max size of the variable value
+                                                    // max value number in moudle = 4024 / (32 + 64+4) = 40
+// MATTER KVS2, for key length large than 64 (Fabric1 ~ FabricF)
+#define MATTER_KVS_BEGIN_ADDR2	        0x003DF000  // 20K (4*5)		// LEV-MOD
+#define MATTER_KVS_MODULE_NUM2          30          // max number of module
+#define MATTER_KVS_VARIABLE_NAME_SIZE2  32          // max size of the variable name
+#define MATTER_KVS_VARIABLE_VALUE_SIZE2 400 + 4    // max size of the variable value
+                                                    // max value number in moudle = 4024 / (32 + 1860+4) = 2
+*/
+#define MATTER_FACTORY_DATA 0x003DF000
 /**
  * For Wlan configurations
  */
@@ -182,7 +195,7 @@
 #define CONFIG_INCLUDE_SIMPLE_CONFIG		1
 
 /*For fast reconnection*/
-#define CONFIG_EXAMPLE_WLAN_FAST_CONNECT	0
+#define CONFIG_EXAMPLE_WLAN_FAST_CONNECT	1
 
 /*For wowlan service settings*/
 #define CONFIG_WOWLAN_SERVICE           			0

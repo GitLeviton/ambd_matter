@@ -18,8 +18,10 @@ ifeq ($(CONFIG_MQTT_EN),y)
 endif
 ifeq ($(CONFIG_LINKKIT_AWSS),y)
 	@make -C linkkit all
-endif
+endif	
 	@make -C matter all
+	@make -C amazon all
+	@make -C $(BASEDIR)/../../Leviton/Make/App_Code all
 	#@make -C xmodem all
 	#@make -C airkiss all
 #*****************************************************************************#
@@ -29,6 +31,8 @@ clean:
 	@make -C baidu clean
 	@make -C mqtt clean
 	@make -C matter clean
+	@make -C amazon all
+	@make -C $(BASEDIR)/../../Leviton/Make/App_Code clean
 	#@make -C xmodem clean
 	#@make -C airkiss clean
 	#@make -C linkkit clean

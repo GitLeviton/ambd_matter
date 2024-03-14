@@ -18,6 +18,7 @@
 #include "ameba_soc.h"
 
 static u32 cpu_systick;
+static uint32_t irq_backup[2];
 
 /**
   * @brief  This function is used to handle flash write ipc interrupt.
@@ -61,10 +62,7 @@ void FLASH_Write_Lock(void)
 {
 	u32 cpu_id = IPC_CPUID();
 	u32 lp_sleep_state;
-
-	asm volatile ("cpsid i" : : : "memory");
-	cpu_systick = SysTick->CTRL;	//disable systick exception
-	SysTick->CTRL = 0;
+    u32 Count = 0; // LEV-MOD
 
 	//u32 hp_sleep_state;
 	/*IPC request to let the other CPU sleep*/
@@ -75,6 +73,16 @@ void FLASH_Write_Lock(void)
 			if(lp_sleep_state & BIT_KM0_SLEEPSYS) {
 				break;
 			}
+            else
+            {
+                Count++;
+                if (Count >= 0x80000000)
+                {
+                    ipc_send_message(IPC_INT_CHAN_FLASHPG_REQ, NULL);
+                    Count = 0;
+                }
+
+            }
 		}
 	} else {
 #if defined (ARM_CORE_CM0)
@@ -86,10 +94,30 @@ void FLASH_Write_Lock(void)
 				if(hp_sleep_state & BIT_KM4_SLEEP_STATUS) {
 					break;
 				}
+            else // LEV-MOD
+            {
+                Count++;
+                if (Count >= 0x80000000)
+                {
+                    ipc_send_message(IPC_INT_CHAN_FLASHPG_REQ, NULL);
+                    Count = 0;
+                }
 			}
 		}
+        }
 #endif
 	}
+
+	// LEV-MOD
+    // We cant have the ZC, Traveler, and the LED interrupts turn off, so we had to change the turn off all interrupts to all but the ones we need to keep.
+    asm volatile ("cpsid i" : : : "memory");
+	irq_backup[0] = NVIC->ISER[0];
+	irq_backup[1] = NVIC->ISER[1];
+	NVIC->ICER[0] = ~((uint32_t) ((1U << TIMER2_IRQ) | (1U << TIMER3_IRQ) | (1U << TIMER4_IRQ) | (1U << TIMER5_IRQ)));
+	NVIC->ICER[1] = 0xFFFFFFFF;
+	cpu_systick = SysTick->CTRL; // disable systick exception
+	SysTick->CTRL = 0;
+	asm volatile ("cpsie i" : : : "memory");
 }
 
 /**
@@ -104,6 +132,14 @@ void FLASH_Write_Unlock(void)
 	u32 cpu_id = IPC_CPUID();
 	u32 lp_sleep_state;
 	//u32 hp_sleep_state;
+
+	// LEV_MOD
+	// Re-enable interrupts that were previously disabled
+    asm volatile ("cpsid i" : : : "memory");
+	NVIC->ISER[0] = irq_backup[0] & ~((uint32_t) ((1U << TIMER2_IRQ) | (1U << TIMER3_IRQ) | (1U << TIMER4_IRQ) | (1U << TIMER5_IRQ)));
+	NVIC->ISER[1] = irq_backup[1];
+	SysTick->CTRL = cpu_systick;//restore systick exception
+	asm volatile ("cpsie i" : : : "memory");
 
 	/*send an event using "sev" instruction to let the other CPU wake up*/
 	asm volatile ("sev");
@@ -127,9 +163,6 @@ void FLASH_Write_Unlock(void)
 		}
 #endif
 	}
-
-	SysTick->CTRL = cpu_systick;//restore systick exception
-	asm volatile ("cpsie i" : : : "memory");	
 }
 
   /**

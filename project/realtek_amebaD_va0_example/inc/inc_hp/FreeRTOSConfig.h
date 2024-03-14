@@ -82,7 +82,7 @@ extern uint32_t SystemCoreClock;
 #define configMINIMAL_SECURE_STACK_SIZE					( 1024 )
 #define configMAX_TASK_NAME_LEN							( 10 )
 #ifdef CONFIG_WIFI_EN
-#define configTOTAL_HEAP_SIZE						( ( size_t ) ( 200 * 1024 ) ) //default
+#define configTOTAL_HEAP_SIZE						( ( size_t ) ( 280 * 1024 ) ) //default //280 //LEV-MOD
 #if (defined CONFIG_HIGH_TP_TEST)
 	#define configTOTAL_HEAP_SIZE					( ( size_t ) ( 100 * 1024 ) )		
 #endif
@@ -118,9 +118,9 @@ extern uint32_t SystemCoreClock;
 
 /* Software timer definitions. */
 #define configUSE_TIMERS								1
-#define configTIMER_TASK_PRIORITY						1
-#define configTIMER_QUEUE_LENGTH						( 10 + 64 )
-#define configTIMER_TASK_STACK_DEPTH					( 512  )
+#define configTIMER_TASK_PRIORITY						5	//1						// LEV-MOD
+#define configTIMER_QUEUE_LENGTH						( 10 + 64 + 20 +40)	//63    // LEV-MOD, recomended from Realtek to solve spinlock issue
+#define configTIMER_TASK_STACK_DEPTH					( 512 *2 )  //LEV-MOD
 
 /* Set the following definitions to 1 to include the API function, or zero
  * to exclude the API function.  NOTE:  Setting an INCLUDE_ parameter to 0 is

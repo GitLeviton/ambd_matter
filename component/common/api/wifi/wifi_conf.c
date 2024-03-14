@@ -12,7 +12,8 @@
 #include <wifi/wifi_util.h>
 #include <wifi/wifi_ind.h>
 #include <osdep_service.h>
-#include <device_lock.h>
+#include <device_lock.h>	
+#include "Lev_Wifi.h"	// LEV-MOD
 
 #if CONFIG_EXAMPLE_WLAN_FAST_CONNECT || (defined(CONFIG_JD_SMART) && CONFIG_JD_SMART)
 #include "wlan_fast_connect/example_wlan_fast_connect.h"
@@ -908,6 +909,30 @@ int wifi_connect(
 #if CONFIG_EXAMPLE_WLAN_FAST_CONNECT || (defined(CONFIG_JD_SMART) && CONFIG_JD_SMART)
 	restore_wifi_info_to_flash();
 #endif
+
+
+// LEV-MOD
+lev_wifi_configuration_t configuration;
+memset(&configuration, 0, sizeof configuration);
+strcpy(configuration.ssid, ssid);
+configuration.ssidLen = ssid_len;
+if (password_len) 
+{
+	strcpy(configuration.passphrase, password);
+	configuration.passphraseLen = password_len;
+}
+configuration.security_type = security_type;
+lev_wifi_save_configuration(&configuration);
+
+/*
+Lev_Saved_Wifi_Info_t Lev_Wifi_Info;
+memset(&Lev_Wifi_Info, 0xFF, sizeof(Lev_Saved_Wifi_Info_t));
+
+strcpy(Lev_Wifi_Info.psk_essid, ssid);
+strcpy(Lev_Wifi_Info.psk_passphrase, password);
+Lev_Wifi_Info.security_type = security_type;
+lev_wifi_save_wifi_info(Lev_Wifi_Info);
+*/
 
 error:
 	if(semaphore == NULL){		

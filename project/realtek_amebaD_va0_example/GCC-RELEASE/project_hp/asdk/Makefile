@@ -52,6 +52,8 @@ REFRIGERATOR_PORT_FILE = $(CHIPDIR)/examples/refrigerator-app/ameba/build/chip/c
 REFRIGERATOR_PORT_ZAP = $(BASEDIR)/component/common/application/matter/example/refrigerator/refrigerator-app.zap
 AIR_PURIFIER_FILE = $(CHIPDIR)/examples/air-purifier-app/ameba/build/chip/codegen/cluster-file.txt
 AIR_PURIFIER_ZAP = $(CHIPDIR)/examples/air-purifier-app/air-purifier-common/air-purifier-app.zap
+D2xxx_FILE = $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen/cluster-file.txt
+D2xxx_ZAP = $(CHIPDIR)/examples/lighting-app/lighting-common/lighting-app.zap
 
 #.PHONY: all build_target_folder menuconfig clean
 
@@ -105,7 +107,8 @@ endif
 
 ifeq ($(CONFIG_BT_EN), y) 
 LINK_APP_LIB += $(BASEDIR)/component/common/bluetooth/realtek/sdk/board/amebad/lib/btgap.a
-ifeq ($(findstring y, $(CONFIG_BT_MESH_PROVISIONER) $(CONFIG_BT_MESH_PROVISIONER_MULTIPLE_PROFILE)), y)
+#ifeq ($(findstring y, $(CONFIG_BT_MESH_PROVISIONER) $(CONFIG_BT_MESH_PROVISIONER_MULTIPLE_PROFILE)), y)
+ifeq ($(CONFIG_BT_MESH_PROVISIONER_MULTIPLE_PROFILE), y) 
 LINK_APP_LIB += $(BASEDIR)/component/common/bluetooth/realtek/sdk/example/bt_mesh/lib/lib/amebad/btmesh_prov.a
 else ifeq ($(findstring y, $(CONFIG_BT_MESH_DEVICE) $(CONFIG_BT_MESH_DEVICE_MULTIPLE_PROFILE)), y)
 LINK_APP_LIB += $(BASEDIR)/component/common/bluetooth/realtek/sdk/example/bt_mesh/lib/lib/amebad/btmesh_dev.a
@@ -226,6 +229,13 @@ refrigerator_port: build_target_folder copy_ld_img2 check_toolchain build_info.h
 air_purifier: build_target_folder copy_ld_img2 check_toolchain build_info.h $(AIR_PURIFIER_FILE)
 	make -C make/chip/air_purifier_app all
 	make -C make/chip_main/air_purifier_app all
+
+# LEV-MOD
+D2xxx: build_target_folder copy_ld_img2 check_toolchain build_info.h $(D2xxx_FILE)
+	make -C $(BASEDIR)/../../Leviton/Make/Matter_Core all
+	make -C $(BASEDIR)/../../Leviton/Make/Matter_App_Code all
+#make -C make/chip/lighting_app all
+#make -C make/chip_main/lighting_port all
 
 #*****************************************************************************#
 #                      RULES TO CREATE DIRECTORY                              #

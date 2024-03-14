@@ -26,6 +26,16 @@
 #include "ameba_soc.h"
 #include "flash_api.h"
 
+#ifndef KM0 // LEV-MOD
+	#include "Lev_Project_Config.h"
+	#ifdef ENCRYPT_FLASH
+	#include "Lev_AES.h"
+	#endif
+#endif
+
+SECTION(".psram.bss") // LEV-MOD PSRAM
+static uint8_t Temp_Buffer[4096];
+
 extern u32 ConfigDebugInfo;
 
 /** @addtogroup AmebaD_Mbed_API 
@@ -196,6 +206,12 @@ int  flash_read_word(flash_t *obj, u32 address, u32 * data)
 //	FLASH_RxData(0, address, 4, data);
 	assert_param(data != NULL);
 
+#ifdef ENCRYPT_FLASH // LEV-MOD
+    if (address >= AES_ENCRYPTION_START_ADDRESS && address <= AES_ENCRYPTION_END_ADDRESS)
+        flash_stream_read(obj,address, 4,(uint8_t*)data);
+    else
+#endif
+    {
 	FLASH_Write_Lock();
 	
 	u32 offset_to_align = address & 0x03;
@@ -218,7 +234,8 @@ int  flash_read_word(flash_t *obj, u32 address, u32 * data)
 	}
 
 	FLASH_Write_Unlock();
-	
+    }	
+
 	return 1;
 }
 
@@ -243,6 +260,12 @@ int  flash_write_word(flash_t *obj, u32 address, u32 data)
 	u32 temp;
 	u32 i = 4 - offset_to_align;
 
+#ifdef ENCRYPT_FLASH // LEV-MOD
+    if (address >= AES_ENCRYPTION_START_ADDRESS && address <= AES_ENCRYPTION_END_ADDRESS)
+        flash_stream_write(obj,address, 4,(uint8_t*) &data);
+    else
+#endif
+    {
 	FLASH_Write_Lock();
 	if(offset_to_align){
 		address -= offset_to_align;
@@ -263,6 +286,8 @@ int  flash_write_word(flash_t *obj, u32 address, u32 data)
 	
 	// Enable write protection
 	// flash_lock();
+    }
+
 	return 1;
 }
 
@@ -280,7 +305,7 @@ int  flash_stream_read(flash_t *obj, u32 address, u32 len, u8 * data)
 {
 	/* To avoid gcc warnings */
 	( void ) obj;
-	
+
 	assert_param(data != NULL);
 
 	u32 offset_to_align;
@@ -288,7 +313,19 @@ int  flash_stream_read(flash_t *obj, u32 address, u32 len, u8 * data)
 	u32 read_word;
 	u8 *ptr;
 	u8 *pbuf;
+    u32 Total_Length = len;
 
+#ifdef ENCRYPT_FLASH // LEV-MOD
+    u32 Intended_Address = address;
+    u32 Intended_Len = len;
+    u8* Intended_Data = data;
+    if (Intended_Address >= AES_ENCRYPTION_START_ADDRESS && Intended_Address <= AES_ENCRYPTION_END_ADDRESS)
+    {
+        data = Temp_Buffer; // force it to grab the entire page
+        address = address & 0xFFFFF000;
+        len = 4096;
+    }
+#endif
 	FLASH_Write_Lock();
 
 	offset_to_align = address & 0x03;
@@ -341,6 +378,14 @@ int  flash_stream_read(flash_t *obj, u32 address, u32 len, u8 * data)
 
 	FLASH_Write_Unlock();
 
+#ifdef ENCRYPT_FLASH // LEV-MOD
+    if (Intended_Address >= AES_ENCRYPTION_START_ADDRESS && Intended_Address <= AES_ENCRYPTION_END_ADDRESS)
+    {
+        Lev_Decrypt_Data(Intended_Address, data,4096);           //Will check address and decrypt if needed
+        memcpy(Intended_Data,data+(Intended_Address % 0x1000),Intended_Len);
+    }
+#endif
+
 	return 1;
 }
 
@@ -356,7 +401,20 @@ int  flash_stream_write(flash_t *obj, u32 address, u32 len, u8 * data)
 {
 	/* To avoid gcc warnings */
 	( void ) obj;
-	
+
+#ifdef ENCRYPT_FLASH // LEV-MOD
+    if (address >= AES_ENCRYPTION_START_ADDRESS && address <= AES_ENCRYPTION_END_ADDRESS)
+    {
+        flash_stream_read(obj, address & 0xFFFFF000, 4096, Temp_Buffer);
+        memcpy (Temp_Buffer + (address % 0x1000),data,len);
+        Lev_Encrypt_Data(address & 0xFFFFF000, Temp_Buffer,4096); // will check address and encrypt if needed
+        address = address & 0xFFFFF000;
+        len = 4096;
+        data = Temp_Buffer;
+        flash_erase_sector(obj, address) ;
+    }
+#endif
+
 	// Check address: 4byte aligned & page(256bytes) aligned
 	u32 page_begin = address &  (~0xff);                     
 	u32 page_end = (address + len) & (~0xff);

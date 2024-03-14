@@ -73,7 +73,7 @@ a lot of data that needs to be copied, this should be set high. */
 #define MEMP_NUM_UDP_PCB        10 
 /* MEMP_NUM_TCP_PCB: the number of simulatenously active TCP
    connections. */
-#define MEMP_NUM_TCP_PCB        10
+#define MEMP_NUM_TCP_PCB        16	// 10 LEV-MOD
 /* MEMP_NUM_TCP_PCB_LISTEN: the number of listening TCP
    connections. */
 #define MEMP_NUM_TCP_PCB_LISTEN 5
@@ -86,9 +86,9 @@ a lot of data that needs to be copied, this should be set high. */
 #endif
 /* MEMP_NUM_SYS_TIMEOUT: the number of simulateously active
    timeouts. */
-#define MEMP_NUM_SYS_TIMEOUT    10
+#define MEMP_NUM_SYS_TIMEOUT    26	// 10 LEV-MOD
 
-#define MEMP_NUM_NETCONN        8
+#define MEMP_NUM_NETCONN        16	// 8 LEV-MOD
 
 /* ---------- Pbuf options ---------- */
 /* PBUF_POOL_SIZE: the number of buffers in the pbuf pool. */
@@ -98,7 +98,7 @@ a lot of data that needs to be copied, this should be set high. */
 #elif defined(CONFIG_HIGH_TP_TEST) && CONFIG_HIGH_TP_TEST
     #define PBUF_POOL_SIZE          60
 #else
-    #define PBUF_POOL_SIZE          40
+    #define PBUF_POOL_SIZE          200 //40 LEV-MOD
 #endif
 
 /* IP_REASS_MAX_PBUFS: Total maximum amount of pbufs waiting to be reassembled.*/
@@ -109,8 +109,7 @@ a lot of data that needs to be copied, this should be set high. */
 #endif
 
 /* PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. */
-#define PBUF_POOL_BUFSIZE       1500
-
+#define PBUF_POOL_BUFSIZE       1600//1280 LEV-MOD
 
 /* ---------- TCP options ---------- */
 #define LWIP_TCP                1
@@ -416,9 +415,9 @@ Certain platform allows computing and verifying the IP, UDP, TCP and ICMP checks
 #define LWIP_ICMP6                      1
 #define LWIP_IPV6_DHCP6                 1
 #undef  MEMP_NUM_SYS_TIMEOUT
-#define MEMP_NUM_SYS_TIMEOUT            13
-#undef  MEMP_NUM_MLD6_GROUP
-#define MEMP_NUM_MLD6_GROUP             6
+#define MEMP_NUM_SYS_TIMEOUT            30
+#undef  MEMP_NUM_MLD6_GROUP 
+#define MEMP_NUM_MLD6_GROUP             6 
 #endif
 
 /*CONFIG_LIBCOAP_ON is defined to 1 in the lib_coap project options preprocessor defined symbol
@@ -446,7 +445,7 @@ Certain platform allows computing and verifying the IP, UDP, TCP and ICMP checks
 
 #if defined(CONFIG_EXAMPLE_MATTER) && CONFIG_EXAMPLE_MATTER
 #undef  MEMP_NUM_SYS_TIMEOUT
-#define MEMP_NUM_SYS_TIMEOUT            14
+#define MEMP_NUM_SYS_TIMEOUT            26 // LEV-MOD
 #endif
 
 #include "lwip/init.h"                  //for version control

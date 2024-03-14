@@ -1391,7 +1391,7 @@ lwip_netconn_do_connect(void *m)
 #if LWIP_TCPIP_CORE_LOCKING
               LWIP_ASSERT("state!", msg->conn->state == NETCONN_CONNECT);
               UNLOCK_TCPIP_CORE();
-              sys_arch_sem_wait(LWIP_API_MSG_SEM(msg), 0);
+              sys_arch_sem_wait(LWIP_API_MSG_SEM(msg), 30000); //0 LEV-MOD
               LOCK_TCPIP_CORE();
               LWIP_ASSERT("state!", msg->conn->state != NETCONN_CONNECT);
 #endif /* LWIP_TCPIP_CORE_LOCKING */
@@ -1831,7 +1831,7 @@ lwip_netconn_do_write(void *m)
         if (lwip_netconn_do_writemore(msg->conn, 0) != ERR_OK) {
           LWIP_ASSERT("state!", msg->conn->state == NETCONN_WRITE);
           UNLOCK_TCPIP_CORE();
-          sys_arch_sem_wait(LWIP_API_MSG_SEM(msg), 0);
+          sys_arch_sem_wait(LWIP_API_MSG_SEM(msg), 30000); //0 LEV-MOD
           LOCK_TCPIP_CORE();
           LWIP_ASSERT("state!", msg->conn->state != NETCONN_WRITE);
         }

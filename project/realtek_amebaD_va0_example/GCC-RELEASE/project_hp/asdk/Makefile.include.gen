@@ -21,7 +21,7 @@ BASEDIR		= $(ROOTDIR)/../../../../..
 KM0_BUILDDIR	= $(ROOTDIR)/../../project_lp
 KM4_BUILDDIR	= $(ROOTDIR)/../../project_hp
 #CHIPDIR	    =$(BASEDIR)/third_party/connectedhomeip
-CHIPDIR         = $(BASEDIR)/third_party/connectedhomeip
+CHIPDIR         = $(BASEDIR)/../../connectedhomeip
 MATTER_TOOLDIR = $(BASEDIR)/tools/matter
 
 TARGETDIR	=$(BASEDIR)/component/soc/realtek/amebad
@@ -57,6 +57,15 @@ COMPILEOS_CYGWIN	= $(shell uname -o | cut -c 1-6)
 endif
 HOSTCC			= cc
 MAKE			= make
+
+#LEV-MOD
+LEV_APP_DIR		= $(ABS_ROOTDIR)/../../../../../../../Leviton
+LEV_MATTER_DIR = $(LEV_APP_DIR)/../lev-matter
+BASE_CODE_DIR = $(LEV_APP_DIR)/../lev-matter/src/leviton_app
+DIMMING_DIR = $(LEV_APP_DIR)/../lev-lib-dimming
+REALTEK_COMPONENT_DIR = $(LEV_MATTER_DIR)/lev-matter-realtek/component
+APPLE_DIR = $(REALTEK_COMPONENT_DIR)/common/application/apple/ADK
+AMAZON_DIR = $(REALTEK_COMPONENT_DIR)/common/application/amazon/amazon-freertos
 
 #*****************************************************************************#
 #                              Compile Flag                                #
@@ -291,6 +300,64 @@ endif
 IFLAGS               += -I$(BASEDIR)/component/common/bluetooth/realtek/sdk/example/bt_config
 IFLAGS               += -I$(BASEDIR)/component/common/application/matter/common/bluetooth/bt_matter_adapter
 
+#amazon
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/vendors/realtek/boards/amebaD/aws_demos/config_files
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/vendors/realtek/sdk/amebaD/component/common/example/amazon_freertos
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/demos/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/demos/network_manager
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/demos/dev_mode_key_provisioning/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/abstractions/pkcs11/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/abstractions/pkcs11/mbedtls
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/abstractions/platform/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/abstractions/platform/freertos/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/abstractions/platform/freertos/include/platform
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/abstractions/secure_sockets/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/abstractions/wifi/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/c_sdk/aws/shadow/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/c_sdk/aws/shadow/src
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/c_sdk/aws/shadow/src/private
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/c_sdk/standard/common/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/c_sdk/standard/common/include/private
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/c_sdk/standard/common/include/types
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/c_sdk/standard/mqtt/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/c_sdk/standard/mqtt/src/private
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/c_sdk/standard/serializer/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/freertos_plus/aws/ota/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/freertos_plus/aws/ota/src
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/freertos_plus/aws/ota/src/mqtt
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/vendors/realtek/boards/amebaD/libraries/freertos_plus/standard/crypto/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/freertos_plus/standard/pkcs11/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/freertos_plus/standard/tls/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/freertos_plus/standard/utils/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/3rdparty/jsmn
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/3rdparty/mbedtls/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/3rdparty/tinycbor
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/3rdparty/tinycbor/src
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/3rdparty/unity/src
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/3rdparty/unity/extras/fixture/src
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/3rdparty/pkcs11
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/freertos_kernel/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/3rdparty/mbedtls_utils
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/3rdparty/mbedtls_config
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/abstractions/pkcs11/corePKCS11/source/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/logging/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/coreMQTT/source/interface
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/coreMQTT/source/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/abstractions/backoff_algorithm/source/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/abstractions/transport/secure_sockets
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/coreHTTP/source/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/coreHTTP/source/dependency/3rdparty/http_parser
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/demos/common/pkcs11_helpers
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/c_sdk/standard/mqtt/test/access
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/device_shadow_for_aws/source/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/coreJSON/source/include
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/demos/common/mqtt_demo_helpers
+IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos-202012.00/libraries/coreJSON/source/include
+
+# LEV-MOD
+include 	$(ABS_ROOTDIR)/../../../../../../../Leviton/Make/Lev_Makefile.include
+
 
 #*****************************************************************************#
 #                             ARM ASSEMBLER FLAGS
@@ -406,8 +473,8 @@ GLOBAL_CFLAGS += -Wno-unused-parameter
 GLOBAL_CFLAGS += -Wno-format
 GLOBAL_CFLAGS += -Wno-format-nonliteral
 GLOBAL_CFLAGS += -Wno-format-security
-
-GLOBAL_CFLAGS += -DFD_SETSIZE=10
+#LEV-MOD
+GLOBAL_CFLAGS += -DFD_SETSIZE=16
 
 GLOBAL_CFLAGS += -DCHIP_DEVICE_LAYER_TARGET=Ameba
 GLOBAL_CFLAGS += -DCHIP_DEVICE_LAYER_NONE=0

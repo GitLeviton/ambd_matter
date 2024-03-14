@@ -89,7 +89,6 @@ CSRC += \
 	$(MESH_DIR)/lib/model/delay_msg_rsp.c \
     $(MESH_MULTIPLE_PROFILE_DIR)/provisioner_multiple_profile/bt_mesh_provisioner_multiple_profile_app_task.c \
     $(MESH_MULTIPLE_PROFILE_DIR)/provisioner_multiple_profile/provisioner_multiple_profile_app.c \
-    $(MESH_DIR)/lib/common/ping_app.c \
     $(MESH_DIR)/lib/common/generic_client_app.c \
     $(MESH_DIR)/lib/common/light_client_app.c \
 	$(MESH_DIR)/lib/common/rmt_prov_client_app.c \
@@ -104,7 +103,9 @@ CSRC += \
     $(MESH_MULTIPLE_PROFILE_DIR)/provisioner_multiple_profile/bt_mesh_provisioner_multiple_profile_app_main.c \
     $(SDK_DIR)/board/amebad/src/vendor_cmd/vendor_cmd.c \
     $(MESH_USER_API_DIR)/provisioner/bt_mesh_provisioner_api.c \
-    $(MESH_USER_API_DIR)/bt_mesh_user_api.c 
+    $(MESH_USER_API_DIR)/bt_mesh_user_api.c \
+    $(MESH_DIR)/lib/model/generic_transition_time.c \
+    $(MESH_DIR)/lib/common/ping_app.c
 
 ifeq ($(CONFIG_BT_MESH_CENTRAL),y)
 CSRC += \

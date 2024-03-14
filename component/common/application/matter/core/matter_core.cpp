@@ -71,6 +71,7 @@ void matter_core_device_callback_internal(const ChipDeviceEvent * event, intptr_
             chip::app::DnssdServer::Instance().StartServer();
 
 #if CHIP_DEVICE_CONFIG_ENABLE_OTA_REQUESTOR
+
             // Init OTA requestor only when we have gotten IPv6 address
             if (!isOTAInitialized)
             {

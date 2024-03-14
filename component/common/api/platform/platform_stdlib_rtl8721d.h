@@ -3,9 +3,9 @@
 
 #define CONFIG_PLATFORM_AMEBA_X 1
 
-#if CHIP_PROJECT
+//#if CHIP_PROJECT	//LEV-MOD
 #define STD_PRINTF 1
-#endif
+//#endif
 
 #if defined (__IARSTDLIB__)
 	#include <stdio.h>

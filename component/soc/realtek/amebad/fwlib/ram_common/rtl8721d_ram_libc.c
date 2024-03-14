@@ -338,6 +338,23 @@ int _rtl_sscanf(const char *buf, const char *fmt, ...)
 	return ret;
 }
 
+#include "platform_stdlib.h"	// LEV-MOD
+#ifdef INSIGHT_CONSOLE
+	#include "lev_net_insight.h"
+#endif
+void printf_LEV(const char *fmt, ...)		// LEV-MOD
+{
+	char Buffer[110];
+    va_list ap;
+    va_start(ap, fmt);
+    vfprintf(stdout,fmt, ap);
+#ifdef INSIGHT_CONSOLE
+	vsnprintf (Buffer, sizeof(Buffer), fmt, ap);
+	lev_net_insight_log_event(LEV_NET_INSIGHT_SERVICE_EVENT_TYPE_CONSOLE, Buffer); // if this is not found, make sure to include lev_net_insight.c
+#endif
+    va_end(ap);
+}
+
 typedef unsigned char u_char;
 /*
  * This array is designed for mapping upper and lower case letter
