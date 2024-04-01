@@ -448,7 +448,7 @@ linker_image2:
 
 	cat $(IMAGE_TARGET_FOLDER)/xip_image2_prepend.bin $(IMAGE_TARGET_FOLDER)/ram_2_prepend.bin > $(IMAGE_TARGET_FOLDER)/km4_image2_all.bin
 	@echo "========== Image manipulating end =========="
-
+	$(CC_SIZE) -A --radix=10 $(IMAGE_TARGET_FOLDER)/target.axf
 linker_image2_ns:
 	@echo "========= linker img2_ns start ========="
 	$(LD) $(LD_ARG) target_img2.axf $(RAM_OBJS_LIST) $(LINK_ROM_LIB_NS) $(LINK_APP_LIB) $(LINK_APP_LIB_MATTER) -lm -lstdc++
@@ -513,7 +513,9 @@ endif
 	#fi
 
 	@echo "========== Image manipulating end =========="
-
+	
+	$(CC_SIZE) -A --radix=10 $(IMAGE_TARGET_FOLDER)/target_img2.axf
+#	$(CC_SIZE) -t --radix=10 $(IMAGE_TARGET_FOLDER)/target_img2.axf
 linker_loader:
 	@echo "========= linker loader start ========="
 	$(LD) $(LD_ARG) target_loader.axf $(RAM_OBJS_LIST) $(LINK_ROM_LIB)  -Wl,--whole-archive -lbootloader_hp -Wl,--no-whole-archive

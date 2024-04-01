@@ -9,10 +9,10 @@
 extern "C" {
 #endif
 
-#include <matter_dcts.h>
+#include <Lev_matter_dcts.h>    // LEV-MOD
 #include <matter_ota.h>
 #include <matter_timers.h>
-#include <matter_utils.h>
+#include <Lev_matter_utils.h>   // LEV-MOD
 #include <matter_wifis.h>
 #include <cmsis_compiler.h>
 #include <stddef.h> /* for size_t */

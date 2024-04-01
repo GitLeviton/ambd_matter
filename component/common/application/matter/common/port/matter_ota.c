@@ -25,6 +25,7 @@ uint32_t matter_ota_new_firmware_addr;
 
 uint8_t matter_ota_header[MATTER_OTA_HEADER_SIZE];
 uint8_t matter_ota_header_size = 0; // variable to track size of ota header
+SECTION(".psram.bss") // LEV-MOD
 uint8_t matter_ota_buffer[MATTER_OTA_SECTOR_SIZE]; // 4KB buffer to be written to one sector
 uint16_t matter_ota_buffer_size = 0; // variable to track size of buffer
 

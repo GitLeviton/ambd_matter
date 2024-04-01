@@ -16,6 +16,7 @@
 
 u32 apNum = 0; // no of total AP scanned
 u8 matter_wifi_trigger = 0;
+SECTION(".psram.bss") // LEV-MOD
 static rtw_scan_result_t matter_userdata[65] = {0};
 static char *matter_ssid;
 void* matter_param_indicator;

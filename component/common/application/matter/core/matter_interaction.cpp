@@ -128,7 +128,7 @@ void UplinkTask(void * pvParameter)
 
 CHIP_ERROR matter_interaction_start_uplink()
 {
-    UplinkEventQueue = xQueueCreate(10, sizeof(AppEvent));
+    UplinkEventQueue = xQueueCreate(20, sizeof(AppEvent));
     if (UplinkEventQueue == NULL)
     {
         ChipLogError(DeviceLayer, "Failed to allocate uplink event queue");

@@ -16,8 +16,12 @@ PORTDIR = $(BASEDIR)/component/common/application/matter/port
 PROTOBUFDIR = $(BASEDIR)/component/common/application/matter/protobuf
 NANOPBDIR = $(BASEDIR)/component/common/application/matter/protobuf/nanopb
 CHIPTESTDIR = $(BASEDIR)/component/common/application/matter/example/chiptest
+dir_lev_bt = $(BASEDIR)/../../Leviton/Matter/Bluetooth
 
+vpath %.c $(BASEDIR)/../../Leviton/Matter/Realtek_Source/
+vpath %.c $(dir_lev_bt)
 vpath %.c $(DIR) $(shell find $(DIR) -type d)
+
 
 #*****************************************************************************#
 #                               Source FILE LIST                              #
@@ -28,16 +32,23 @@ vpath %.c $(DIR) $(shell find $(DIR) -type d)
 # Source file list
 # -------------------------------------------------------------------
 CSRC += $(ATCMDDIR)/atcmd_matter.c
-CSRC += $(BTDIR)/bt_matter_adapter_app_main.c
-CSRC += $(BTDIR)/bt_matter_adapter_app_task.c
-CSRC += $(BTDIR)/bt_matter_adapter_peripheral_app.c
-CSRC += $(BTDIR)/bt_matter_adapter_service.c
-CSRC += $(BTDIR)/bt_matter_adapter_wifi.c
+#CSRC += $(BTDIR)/bt_matter_adapter_app_main.c
+#CSRC += $(BTDIR)/bt_matter_adapter_app_task.c
+#CSRC += $(BTDIR)/bt_matter_adapter_peripheral_app.c
+#CSRC += $(BTDIR)/bt_matter_adapter_service.c
+#CSRC += $(BTDIR)/bt_matter_adapter_wifi.c
+CSRC += ${dir_lev_bt}/bt_matter_adapter_app_main.c
+CSRC += ${dir_lev_bt}/bt_matter_adapter_app_task.c
+CSRC += ${dir_lev_bt}/bt_matter_adapter_peripheral_app.c
+CSRC += ${dir_lev_bt}/bt_matter_adapter_service.c
+CSRC += ${dir_lev_bt}/bt_matter_adapter_wifi.c
 CSRC += $(MBEDDIR)/net_sockets.c
-CSRC += $(PORTDIR)/matter_dcts.c
+#CSRC += $(PORTDIR)/matter_dcts.c
+CSRC += $(BASEDIR)/../../Leviton/Matter/Realtek_Source/Lev_matter_dcts.c #LEV-MOD
 CSRC += $(PORTDIR)/matter_ota.c
 CSRC += $(PORTDIR)/matter_timers.c
-CSRC += $(PORTDIR)/matter_utils.c
+#CSRC += $(PORTDIR)/matter_utils.c
+CSRC += $(BASEDIR)/../../Leviton/Matter/Realtek_Source/Lev_matter_utils.c #LEV-MOD
 CSRC += $(PORTDIR)/matter_wifis.c
 CSRC += $(PROTOBUFDIR)/ameba_factory.pb.c
 CSRC += $(NANOPBDIR)/pb_common.c

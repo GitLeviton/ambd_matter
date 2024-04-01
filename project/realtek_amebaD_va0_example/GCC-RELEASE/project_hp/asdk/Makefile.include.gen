@@ -66,6 +66,7 @@ DIMMING_DIR = $(LEV_APP_DIR)/../lev-lib-dimming
 REALTEK_COMPONENT_DIR = $(LEV_MATTER_DIR)/lev-matter-realtek/component
 APPLE_DIR = $(REALTEK_COMPONENT_DIR)/common/application/apple/ADK
 AMAZON_DIR = $(REALTEK_COMPONENT_DIR)/common/application/amazon/amazon-freertos
+OUTPUT_DIR			= ${LEV_APP_DIR}/Output
 
 #*****************************************************************************#
 #                              Compile Flag                                #
@@ -647,7 +648,9 @@ NETWORK_RENAME_CODE2SRAM:
 #*****************************************************************************#
 
 %.o:%.c
-	$(CC) $(GLOBAL_CFLAGS) $(MODULE_IFLAGS) $<  -o $@
+	$(CC) $(GLOBAL_CFLAGS) $(MODULE_IFLAGS) $<  -o $@	
+
+#OUTPUT_DIR	
 
 #*****************************************************************************#
 #              RULES TO GENERATE OBJECT FILE FROM .CPP FILE                   #

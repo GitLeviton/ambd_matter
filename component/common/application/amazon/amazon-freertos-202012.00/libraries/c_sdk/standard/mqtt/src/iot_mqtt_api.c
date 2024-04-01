@@ -47,6 +47,8 @@
 /* Atomic operations. */
 #include "iot_atomic.h"
 
+#include "psram_reserve.h" // LEV-MOD
+
 /* Validate MQTT configuration settings. */
 #if IOT_MQTT_ENABLE_ASSERTS != 0 && IOT_MQTT_ENABLE_ASSERTS != 1
     #error "IOT_MQTT_ENABLE_ASSERTS must be 0 or 1."
@@ -68,6 +70,7 @@
  * @brief Fixed Size Array to hold Mapping of MQTT Connection used in MQTT 201906.00 library to MQTT Context
  * used in calling MQTT LTS API from shim to send packets on the network.
  */
+SECTION(".psram.bss") // LEV-MOD
 _connContext_t connToContext[ MAX_NO_OF_MQTT_CONNECTIONS ];
 
 /* Static storage for mutex used for synchronized access to #_connContext_t array. */
