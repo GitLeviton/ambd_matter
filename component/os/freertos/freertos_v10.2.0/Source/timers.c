@@ -144,7 +144,7 @@ PRIVILEGED_DATA static TaskHandle_t xTimerTaskHandle = NULL;
 /*lint -restore */
 
 /*-----------------------------------------------------------*/
-
+#include "psram_reserve.h" // LEV-MOD
 #if( configSUPPORT_STATIC_ALLOCATION == 1 )
 
 	/* If static allocation is supported then the application must provide the
@@ -160,6 +160,7 @@ PRIVILEGED_DATA static TaskHandle_t xTimerTaskHandle = NULL;
 			function then they must be declared static - otherwise they will be allocated on
 			the stack and so not exists after this function exits. */
 			static StaticTask_t xTimerTaskTCB;
+			SECTION(".psram.bss")  // LEV-MOD PSRAM
 			static StackType_t uxTimerTaskStack[configTIMER_TASK_STACK_DEPTH];
 
 			/* Pass out a pointer to the StaticTask_t structure in which the Timer

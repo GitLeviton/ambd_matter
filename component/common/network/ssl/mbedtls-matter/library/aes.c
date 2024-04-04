@@ -336,26 +336,36 @@ static const uint32_t RCON[10] =
 };
 
 #else /* MBEDTLS_AES_ROM_TABLES */
-
+#include "psram_reserve.h" // LEV-MOD
 /*
  * Forward S-box & tables
  */
+SECTION(".psram.bss")  // LEV-MOD PSRAM
 static unsigned char FSb[256];
+SECTION(".psram.bss")  // LEV-MOD PSRAM
 static uint32_t FT0[256];
 #if !defined(MBEDTLS_AES_FEWER_TABLES)
+SECTION(".psram.bss")  // LEV-MOD PSRAM
 static uint32_t FT1[256];
+SECTION(".psram.bss")  // LEV-MOD PSRAM
 static uint32_t FT2[256];
+SECTION(".psram.bss")  // LEV-MOD PSRAM
 static uint32_t FT3[256];
 #endif /* !MBEDTLS_AES_FEWER_TABLES */
 
 /*
  * Reverse S-box & tables
  */
+SECTION(".psram.bss")  // LEV-MOD PSRAM
 static unsigned char RSb[256];
+SECTION(".psram.bss")  // LEV-MOD PSRAM
 static uint32_t RT0[256];
 #if !defined(MBEDTLS_AES_FEWER_TABLES)
+SECTION(".psram.bss")  // LEV-MOD PSRAM
 static uint32_t RT1[256];
+SECTION(".psram.bss")  // LEV-MOD PSRAM
 static uint32_t RT2[256];
+SECTION(".psram.bss")  // LEV-MOD PSRAM
 static uint32_t RT3[256];
 #endif /* !MBEDTLS_AES_FEWER_TABLES */
 

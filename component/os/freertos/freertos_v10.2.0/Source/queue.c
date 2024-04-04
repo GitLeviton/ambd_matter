@@ -41,6 +41,8 @@ task.h is included from an application file. */
 	#include "croutine.h"
 #endif
 
+#include "psram_reserve.h"// LEV-MOD
+
 /* Lint e9021, e961 and e750 are suppressed as a MISRA exception justified
 because the MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined
 for the header files above, but not in this file, in order to generate the
@@ -400,7 +402,8 @@ Queue_t * const pxQueue = xQueue;
 		are greater than or equal to the pointer to char requirements the cast
 		is safe.  In other cases alignment requirements are not strict (one or
 		two bytes). */
-		pxNewQueue = ( Queue_t * ) pvPortMalloc( sizeof( Queue_t ) + xQueueSizeInBytes ); /*lint !e9087 !e9079 see comment above. */
+		//pxNewQueue = ( Queue_t * ) pvPortMalloc( sizeof( Queue_t ) + xQueueSizeInBytes ); /*lint !e9087 !e9079 see comment above. */
+		pxNewQueue = ( Queue_t * ) Psram_reserve_malloc( sizeof( Queue_t ) + xQueueSizeInBytes ); /*lint !e9087 !e9079 see comment above. */ // LEV-MOD
 
 		if( pxNewQueue != NULL )
 		{
@@ -1991,7 +1994,8 @@ Queue_t * const pxQueue = xQueue;
 	{
 		/* The queue can only have been allocated dynamically - free it
 		again. */
-		vPortFree( pxQueue );
+		//vPortFree( pxQueue );
+		Psram_reserve_malloc( pxQueue ); // LEV-MOD
 	}
 	#elif( ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) )
 	{
@@ -1999,7 +2003,8 @@ Queue_t * const pxQueue = xQueue;
 		check before attempting to free the memory. */
 		if( pxQueue->ucStaticallyAllocated == ( uint8_t ) pdFALSE )
 		{
-			vPortFree( pxQueue );
+			//vPortFree( pxQueue );
+			Psram_reserve_malloc( pxQueue ); // LEV-MOD
 		}
 		else
 		{

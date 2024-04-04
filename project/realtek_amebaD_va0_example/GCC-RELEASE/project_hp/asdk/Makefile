@@ -53,7 +53,7 @@ REFRIGERATOR_PORT_ZAP = $(BASEDIR)/component/common/application/matter/example/r
 AIR_PURIFIER_FILE = $(CHIPDIR)/examples/air-purifier-app/ameba/build/chip/codegen/cluster-file.txt
 AIR_PURIFIER_ZAP = $(CHIPDIR)/examples/air-purifier-app/air-purifier-common/air-purifier-app.zap
 D2xxx_FILE = $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen/cluster-file.txt
-D2xxx_ZAP = $(CHIPDIR)/examples/lighting-app/lighting-common/lighting-app.zap
+D2xxx_ZAP = $(CHIPDIR)/../Leviton/D2xxx/D2xxx.zap
 
 #.PHONY: all build_target_folder menuconfig clean
 
@@ -231,7 +231,8 @@ air_purifier: build_target_folder copy_ld_img2 check_toolchain build_info.h $(AI
 	make -C make/chip_main/air_purifier_app all
 
 # LEV-MOD
-D2xxx: build_target_folder copy_ld_img2 check_toolchain build_info.h $(D2xxx_FILE)
+#D2xxx: build_target_folder copy_ld_img2 check_toolchain build_info.h $(D2xxx_FILE)
+D2xxx: build_target_folder copy_ld_img2 check_toolchain build_info.h $(LIGHTING_FILE)
 	make -C $(BASEDIR)/../../Leviton/Make/Matter_Core all
 	make -C $(BASEDIR)/../../Leviton/Make/Matter_App_Code all
 #make -C make/chip/lighting_app all
@@ -297,14 +298,14 @@ $(ALL_CLUSTERS_FILE): $(ALL_CLUSTERS_ZAP)
 	python3 $(CHIPDIR)/src/app/zap_cluster_list.py --zap_file $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/all-clusters-app.zap > $(CHIPDIR)/examples/all-clusters-app/ameba/build/chip/codegen/cluster-file.txt
 	python3 $(MATTER_TOOLDIR)/codegen_helpers/parse_clusters.py --cluster_file $(CHIPDIR)/examples/all-clusters-app/ameba/build/chip/codegen/cluster-file.txt --chip_path $(CHIPDIR)
 
-$(LIGHTING_FILE): $(LIGHTING_ZAP)
-	@ rm -f $(RAM_OBJS_LIST)
-	mkdir -p $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen/zap-generated
-	python3 $(CHIPDIR)/scripts/tools/zap/generate.py --no-prettify-output --templates src/app/zap-templates/matter-idl-server.json --output-dir examples/lighting-app/ameba/build/chip/codegen/zap-generated $^
-	python3 $(CHIPDIR)/scripts/tools/zap/generate.py --no-prettify-output --templates src/app/zap-templates/app-templates.json --output-dir examples/lighting-app/ameba/build/chip/codegen/zap-generated $^
-	python3 $(CHIPDIR)/scripts/codegen.py --generator cpp-app --output-dir $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen --expected-outputs $(MATTER_TOOLDIR)/codegen_helpers/expected.outputs $(CHIPDIR)/examples/lighting-app/lighting-common/lighting-app.matter
-	python3 $(CHIPDIR)/src/app/zap_cluster_list.py --zap_file $(CHIPDIR)/examples/lighting-app/lighting-common/lighting-app.zap > $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen/cluster-file.txt
-	python3 $(MATTER_TOOLDIR)/codegen_helpers/parse_clusters.py --cluster_file $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen/cluster-file.txt --chip_path $(CHIPDIR)
+#$(LIGHTING_FILE): $(LIGHTING_ZAP)
+#	@ rm -f $(RAM_OBJS_LIST)
+#	mkdir -p $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen/zap-generated
+#	python3 $(CHIPDIR)/scripts/tools/zap/generate.py --no-prettify-output --templates src/app/zap-templates/matter-idl-server.json --output-dir examples/lighting-app/ameba/build/chip/codegen/zap-generated $^
+#	python3 $(CHIPDIR)/scripts/tools/zap/generate.py --no-prettify-output --templates src/app/zap-templates/app-templates.json --output-dir examples/lighting-app/ameba/build/chip/codegen/zap-generated $^
+#	python3 $(CHIPDIR)/scripts/codegen.py --generator cpp-app --output-dir $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen --expected-outputs $(MATTER_TOOLDIR)/codegen_helpers/expected.outputs $(CHIPDIR)/examples/lighting-app/lighting-common/lighting-app.matter
+#	python3 $(CHIPDIR)/src/app/zap_cluster_list.py --zap_file $(CHIPDIR)/examples/lighting-app/lighting-common/lighting-app.zap > $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen/cluster-file.txt
+#	python3 $(MATTER_TOOLDIR)/codegen_helpers/parse_clusters.py --cluster_file $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen/cluster-file.txt --chip_path $(CHIPDIR)
 
 $(THERMOSTAT_PORT_FILE): $(THERMOSTAT_PORT_ZAP)
 	@ rm -f $(RAM_OBJS_LIST)
@@ -349,6 +350,15 @@ copy_gen_files_light_dm:
 copy_gen_files_bridge_dm:
 	cp $(BASEDIR)/component/common/application/matter/example/bridge_dm/endpoint_config.h $(CHIPDIR)/examples/bridge-app/ameba/build/chip/codegen/zap-generated
 	cp $(BASEDIR)/component/common/application/matter/example/bridge_dm/gen_config.h $(CHIPDIR)/examples/bridge-app/ameba/build/chip/codegen/zap-generated
+
+$(D2xxx_FILE): $(D2xxx_ZAP)
+	@ rm -f $(RAM_OBJS_LIST)
+	mkdir -p $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen/zap-generated
+	python3 $(CHIPDIR)/scripts/tools/zap/generate.py --no-prettify-output --templates src/app/zap-templates/matter-idl-server.json --output-dir examples/lighting-app/ameba/build/chip/codegen/zap-generated $^
+	python3 $(CHIPDIR)/scripts/tools/zap/generate.py --no-prettify-output --templates src/app/zap-templates/app-templates.json --output-dir examples/lighting-app/ameba/build/chip/codegen/zap-generated $^
+	python3 $(CHIPDIR)/scripts/codegen.py --generator cpp-app --output-dir $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen --expected-outputs $(MATTER_TOOLDIR)/codegen_helpers/expected.outputs $(CHIPDIR)/../Leviton/D2xxx/D2xxx.matter
+	python3 $(CHIPDIR)/src/app/zap_cluster_list.py --zap_file $(D2xxx_ZAP) > $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen/cluster-file.txt
+	python3 $(MATTER_TOOLDIR)/codegen_helpers/parse_clusters.py --cluster_file $(CHIPDIR)/examples/lighting-app/ameba/build/chip/codegen/cluster-file.txt --chip_path $(CHIPDIR)
 
 #*****************************************************************************#
 #                      RULES TO LINKER IMAGE                                  #
