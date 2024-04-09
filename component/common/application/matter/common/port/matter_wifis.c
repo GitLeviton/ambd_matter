@@ -341,10 +341,10 @@ int matter_wifi_connect(
          * This behavior matches other devices behavior as phone and laptop is unable to connect with key_id > 0
          * */
     }
-
     matter_wifi_trigger = 1;
     matter_set_autoreconnect(1);
-    wifi_connect(ssid, security_type, password, strlen(ssid), strlen(password), key_id, NULL);
+    //wifi_connect(ssid, security_type, password, strlen(ssid), strlen(password), key_id, NULL);
+    Lev_Wifi_Connect_Mesh (ssid, security_type, password, strlen(ssid), strlen(password));
 
     return RTW_SUCCESS;
 }

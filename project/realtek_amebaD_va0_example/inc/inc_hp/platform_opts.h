@@ -138,7 +138,7 @@
 #define MATTER_KVS_VARIABLE_VALUE_SIZE2 400 + 4    // max size of the variable value
                                                     // max value number in moudle = 4024 / (32 + 1860+4) = 2
 */
-#define MATTER_FACTORY_DATA 0x003DF000// RYAN TEST FIX ME
+#define MATTER_FACTORY_DATA 0x003DF000// THIS IS NOT ACTUALLY USED
 /**
  * For Wlan configurations
  */
