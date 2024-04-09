@@ -36,6 +36,7 @@ DIR += $(CHIPDIR)/src/app
 DIR += $(CHIPDIR)/src/app/server
 DIR += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common
 DIR += $(CHIPDIR)/examples/all-clusters-app/ameba/main
+DIR += $(CHIPDIR)/examples/microwave-oven-app/microwave-oven-common/
 DIR += $(CHIPDIR)/examples/platform/ameba/ota
 DIR += $(CHIPDIR)/examples/platform/ameba/route_hook
 DIR += $(CHIPDIR)/examples/platform/ameba/shell
@@ -70,6 +71,7 @@ IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/all-clusters-common
 IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/all-clusters-common/include
 IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/ameba/main/include
 IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/ameba/build/chip/gen/include
+IFLAGS += -I$(CHIPDIR)/examples/microwave-oven-app/microwave-oven-common/include
 IFLAGS += -I$(CHIPDIR)/examples/platform/ameba
 IFLAGS += -I$(CHIPDIR)/examples/providers
 IFLAGS += -I$(CHIPDIR)/src/include/
@@ -97,45 +99,52 @@ CPPSRC += $(CHIPDIR)/src/app/server/EchoHandler.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/OnboardingCodesUtil.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/CommissioningWindowManager.cpp
 
-CPPSRC += $(CHIPDIR)/src/app/icd/ICDManagementServer.cpp
-CPPSRC += $(CHIPDIR)/src/app/icd/ICDMonitoringTable.cpp
+CPPSRC += $(CHIPDIR)/src/app/icd/server/ICDMonitoringTable.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/attribute-storage.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/attribute-table.cpp
-CPPSRC += $(CHIPDIR)/src/app/util/attribute-size-util.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/binding-table.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/DataModelHandler.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/ember-compatibility-functions.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/generic-callback-stubs.cpp
-CPPSRC += $(CHIPDIR)/src/app/util/message.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/util.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/privilege-storage.cpp
 
 CPPSRC += $(CHIPDIR)/src/app/reporting/Engine.cpp
+CPPSRC += $(CHIPDIR)/src/app/reporting/reporting.cpp
 
 CPPSRC += $(shell cat $(CODEGEN_DIR)/cluster-file.txt)
 
 CPPSRC += $(CODEGEN_DIR)/app/callback-stub.cpp
+CPPSRC += $(CODEGEN_DIR)/app/cluster-init-callback.cpp
 CPPSRC += $(CODEGEN_DIR)/zap-generated/IMClusterCommandHandler.cpp
 
 CPPSRC += $(CHIPDIR)/zzz_generated/app-common/app-common/zap-generated/attributes/Accessors.cpp
 CPPSRC += $(CHIPDIR)/zzz_generated/app-common/app-common/zap-generated/cluster-objects.cpp
 
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/air-quality-instance.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/bridged-actions-stub.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/dishwasher-alarm-stub.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/dishwasher-mode.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/fan-stub.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/laundry-washer-mode.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/laundry-washer-controls-delegate-impl.cpp
-# CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/operational-state-delegate-impl.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/laundry-dryer-controls-delegate-impl.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/operational-state-delegate-impl.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/rvc-operational-state-delegate-impl.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/resource-monitoring-delegates.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/rvc-modes.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/smco-stub.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/static-supported-modes-manager.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/static-supported-temperature-levels.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/concentration-measurement-instances.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/oven-modes.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/microwave-oven-mode.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/oven-operational-state-delegate.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/src/tcc-mode.cpp
+CPPSRC += $(CHIPDIR)/examples/microwave-oven-app/microwave-oven-common/src/microwave-oven-device.cpp
 
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/chipinterface.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/BindingHandler.cpp
-CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/OperationalStateManager.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/ManualOperationCommand.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/DeviceCallbacks.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/SmokeCOAlarmManager.cpp

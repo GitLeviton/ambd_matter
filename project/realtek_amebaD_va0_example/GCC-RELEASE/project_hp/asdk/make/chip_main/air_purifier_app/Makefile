@@ -94,25 +94,24 @@ CPPSRC += $(CHIPDIR)/src/app/server/EchoHandler.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/OnboardingCodesUtil.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/CommissioningWindowManager.cpp
 
-CPPSRC += $(CHIPDIR)/src/app/icd/ICDManagementServer.cpp
-CPPSRC += $(CHIPDIR)/src/app/icd/ICDMonitoringTable.cpp
+CPPSRC += $(CHIPDIR)/src/app/icd/server/ICDMonitoringTable.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/attribute-storage.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/attribute-table.cpp
-CPPSRC += $(CHIPDIR)/src/app/util/attribute-size-util.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/binding-table.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/DataModelHandler.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/ember-compatibility-functions.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/generic-callback-stubs.cpp
-CPPSRC += $(CHIPDIR)/src/app/util/message.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/util.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/privilege-storage.cpp
 
 CPPSRC += $(shell cat $(CODEGEN_DIR)/cluster-file.txt)
 
 CPPSRC += $(CODEGEN_DIR)/app/callback-stub.cpp
+CPPSRC += $(CODEGEN_DIR)/app/cluster-init-callback.cpp
 CPPSRC += $(CODEGEN_DIR)/zap-generated/IMClusterCommandHandler.cpp
 
 CPPSRC += $(CHIPDIR)/src/app/reporting/Engine.cpp
+CPPSRC += $(CHIPDIR)/src/app/reporting/reporting.cpp
 
 CPPSRC += $(CHIPDIR)/src/lib/dnssd/minimal_mdns/responders/IP.cpp
 
@@ -124,6 +123,7 @@ CPPSRC += $(CHIPDIR)/examples/air-purifier-app/ameba/main/CHIPDeviceManager.cpp
 CPPSRC += $(CHIPDIR)/examples/air-purifier-app/air-purifier-common/src/air-purifier-manager.cpp
 CPPSRC += $(CHIPDIR)/examples/air-purifier-app/air-purifier-common/src/air-quality-sensor-manager.cpp
 CPPSRC += $(CHIPDIR)/examples/air-purifier-app/air-purifier-common/src/filter-delegates.cpp
+CPPSRC += $(CHIPDIR)/examples/air-purifier-app/air-purifier-common/src/thermostat-manager.cpp
 
 CPPSRC += $(CHIPDIR)/examples/platform/ameba/ota/OTAInitializer.cpp
 CPPSRC += $(CHIPDIR)/examples/providers/DeviceInfoProviderImpl.cpp

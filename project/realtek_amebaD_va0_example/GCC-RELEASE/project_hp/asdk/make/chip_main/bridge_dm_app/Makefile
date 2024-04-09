@@ -101,25 +101,24 @@ CPPSRC += $(CHIPDIR)/src/app/server/EchoHandler.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/OnboardingCodesUtil.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/CommissioningWindowManager.cpp
 
-CPPSRC += $(CHIPDIR)/src/app/icd/ICDManagementServer.cpp
-CPPSRC += $(CHIPDIR)/src/app/icd/ICDMonitoringTable.cpp
+CPPSRC += $(CHIPDIR)/src/app/icd/server/ICDMonitoringTable.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/attribute-storage.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/attribute-table.cpp
-CPPSRC += $(CHIPDIR)/src/app/util/attribute-size-util.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/binding-table.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/DataModelHandler.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/ember-compatibility-functions.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/generic-callback-stubs.cpp
-CPPSRC += $(CHIPDIR)/src/app/util/message.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/util.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/privilege-storage.cpp
 
 CPPSRC += $(shell cat $(CODEGEN_DIR)/cluster-file.txt)
 
 CPPSRC += $(CODEGEN_DIR)/app/callback-stub.cpp
+CPPSRC += $(CODEGEN_DIR)/app/cluster-init-callback.cpp
 CPPSRC += $(CODEGEN_DIR)/zap-generated/IMClusterCommandHandler.cpp
 
 CPPSRC += $(CHIPDIR)/src/app/reporting/Engine.cpp
+CPPSRC += $(CHIPDIR)/src/app/reporting/reporting.cpp
 
 CPPSRC += $(CHIPDIR)/src/lib/dnssd/minimal_mdns/responders/IP.cpp
 
@@ -135,7 +134,7 @@ CPPSRC += $(BASEDIR)/component/common/application/matter/core/matter_core.cpp
 CPPSRC += $(BASEDIR)/component/common/application/matter/core/matter_interaction.cpp
 CPPSRC += $(BASEDIR)/component/common/application/matter/core/matter_data_model.cpp
 CPPSRC += $(BASEDIR)/component/common/application/matter/core/matter_data_model_presets.cpp
-CPPSRC += $(BASEDIR)/component/common/application/matter/driver/bridge_driver.cpp
+CPPSRC += $(BASEDIR)/component/common/application/matter/driver/bridge_dm_driver.cpp
 CPPSRC += $(BASEDIR)/component/common/application/matter/example/bridge_dm/example_matter_bridge.cpp
 CPPSRC += $(BASEDIR)/component/common/application/matter/example/bridge_dm/matter_drivers.cpp
 

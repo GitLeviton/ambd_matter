@@ -34,6 +34,7 @@ CORE_TARGETS: $(OBJS)
 clean: CLEAN_OBJS 
 	make -C all_clusters_app clean
 	make -C lighting_app clean
+	make -C light_switch_app clean
 	make -C lighting_dm_app clean
 	make -C lighting_port clean
 	make -C thermostat_port clean
@@ -41,5 +42,8 @@ clean: CLEAN_OBJS
 	make -C bridge_dm_app clean
 	make -C refrigerator_port clean
 	make -C air_purifier_app clean
+	make -C aircon_port clean
+	make -C dishwasher_port clean
+	make -C laundrywasher_port clean
 
 -include $(DEPS)

@@ -7,11 +7,12 @@
 #include <app/ConcreteAttributePath.h>
 #include <app/reporting/reporting.h>
 #include <app/util/attribute-storage.h>
-
+#include <app/util/endpoint-config-defines.h>
 #include <app-common/zap-generated/attribute-type.h>
 #include <app-common/zap-generated/attributes/Accessors.h>
 #include <app-common/zap-generated/ids/Attributes.h>
 #include <app-common/zap-generated/ids/Clusters.h>
+#include <protocols/interaction_model/StatusCode.h>
 
 #include <lib/support/ZclString.h>
 
@@ -19,6 +20,7 @@ using namespace ::chip;
 using namespace ::chip::DeviceLayer;
 using namespace ::chip::Platform;
 using namespace ::chip::app::Clusters;
+using chip::Protocols::InteractionModel::Status;
 
 #define PWM_LED         PB_5
 #define GPIO_IRQ_PIN    PA_12
@@ -86,9 +88,9 @@ constexpr CommandId onOffIncomingCommands[] = {
 };
 
 DECLARE_DYNAMIC_CLUSTER_LIST_BEGIN(bridgedLightClusters)
-DECLARE_DYNAMIC_CLUSTER(OnOff::Id, onOffAttrs, onOffIncomingCommands, nullptr),
-    DECLARE_DYNAMIC_CLUSTER(Descriptor::Id, descriptorAttrs, nullptr, nullptr),
-    DECLARE_DYNAMIC_CLUSTER(BridgedDeviceBasicInformation::Id, bridgedDeviceBasicAttrs, nullptr,
+DECLARE_DYNAMIC_CLUSTER(OnOff::Id, onOffAttrs, ZAP_CLUSTER_MASK(SERVER), onOffIncomingCommands, nullptr),
+    DECLARE_DYNAMIC_CLUSTER(Descriptor::Id, descriptorAttrs, ZAP_CLUSTER_MASK(SERVER), nullptr, nullptr),
+    DECLARE_DYNAMIC_CLUSTER(BridgedDeviceBasicInformation::Id, bridgedDeviceBasicAttrs, ZAP_CLUSTER_MASK(SERVER), nullptr,
                             nullptr) DECLARE_DYNAMIC_CLUSTER_LIST_END;
 
 // Declare Bridged Light endpoint
@@ -123,18 +125,18 @@ int AddDeviceEndpoint(MatterBridge * dev, EmberAfEndpointType * ep, const Span<c
         if (NULL == gDevices[index])
         {
             gDevices[index] = dev;
-            EmberAfStatus ret;
+            CHIP_ERROR ret;
             while (true)
             {
                 dev->SetEndpointId(gCurrentEndpointId);
                 ret = emberAfSetDynamicEndpoint(index, gCurrentEndpointId, ep, dataVersionStorage, deviceTypeList, parentEndpointId);
-                if (ret == EMBER_ZCL_STATUS_SUCCESS)
+                if (ret == CHIP_NO_ERROR)
                 {
                     ChipLogProgress(DeviceLayer, "Added device %s to dynamic endpoint %d (index=%d)", dev->GetName(),
                                     gCurrentEndpointId, index);
                     return index;
                 }
-                else if (ret != EMBER_ZCL_STATUS_DUPLICATE_EXISTS)
+                else if (ret != CHIP_ERROR_ENDPOINT_EXISTS)
                 {
                     return -1;
                 }
@@ -158,19 +160,18 @@ CHIP_ERROR RemoveDeviceEndpoint(MatterBridge * dev)
     {
         if (gDevices[index] == dev)
         {
-            EndpointId ep   = emberAfClearDynamicEndpoint(index);
-            gDevices[index] = NULL;
-            ChipLogProgress(DeviceLayer, "Removed device %s from dynamic endpoint %d (index=%d)", dev->GetName(), ep, index);
             // Silence complaints about unused ep when progress logging
             // disabled.
-            UNUSED_VAR(ep);
+            [[maybe_unused]] EndpointId ep = emberAfClearDynamicEndpoint(index);
+            gDevices[index]                = nullptr;
+            ChipLogProgress(DeviceLayer, "Removed device %s from dynamic endpoint %d (index=%d)", dev->GetName(), ep, index);
             return CHIP_NO_ERROR;
         }
     }
     return CHIP_ERROR_INTERNAL;
 }
 
-EmberAfStatus HandleReadBridgedDeviceBasicAttribute(MatterBridge * dev, chip::AttributeId attributeId, uint8_t * buffer,
+Status HandleReadBridgedDeviceBasicAttribute(MatterBridge * dev, chip::AttributeId attributeId, uint8_t * buffer,
                                                     uint16_t maxReadLength)
 {
     using namespace BridgedDeviceBasicInformation::Attributes;
@@ -192,13 +193,13 @@ EmberAfStatus HandleReadBridgedDeviceBasicAttribute(MatterBridge * dev, chip::At
     }
     else
     {
-        return EMBER_ZCL_STATUS_FAILURE;
+        return Status::Failure;
     }
 
-    return EMBER_ZCL_STATUS_SUCCESS;
+    return Status::Success;
 }
 
-EmberAfStatus HandleReadOnOffAttribute(MatterBridge * dev, chip::AttributeId attributeId, uint8_t * buffer, uint16_t maxReadLength)
+Status HandleReadOnOffAttribute(MatterBridge * dev, chip::AttributeId attributeId, uint8_t * buffer, uint16_t maxReadLength)
 {
     ChipLogProgress(DeviceLayer, "HandleReadOnOffAttribute: attrId=%" PRIu32 ", maxReadLength=%u", attributeId, maxReadLength);
 
@@ -212,13 +213,13 @@ EmberAfStatus HandleReadOnOffAttribute(MatterBridge * dev, chip::AttributeId att
     }
     else
     {
-        return EMBER_ZCL_STATUS_FAILURE;
+        return Status::Failure;
     }
 
-    return EMBER_ZCL_STATUS_SUCCESS;
+    return Status::Success;
 }
 
-EmberAfStatus HandleWriteOnOffAttribute(MatterBridge * dev, chip::AttributeId attributeId, uint8_t * buffer)
+Status HandleWriteOnOffAttribute(MatterBridge * dev, chip::AttributeId attributeId, uint8_t * buffer)
 {
     ChipLogProgress(DeviceLayer, "HandleWriteOnOffAttribute: attrId=%d", attributeId);
 
@@ -236,20 +237,20 @@ EmberAfStatus HandleWriteOnOffAttribute(MatterBridge * dev, chip::AttributeId at
     }
     else
     {
-        return EMBER_ZCL_STATUS_FAILURE;
+        return Status::Failure;
     }
 
-    return EMBER_ZCL_STATUS_SUCCESS;
+    return Status::Success;
 }
 
 
-EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint, ClusterId clusterId,
+Status emberAfExternalAttributeReadCallback(EndpointId endpoint, ClusterId clusterId,
                                                    const EmberAfAttributeMetadata * attributeMetadata, uint8_t * buffer,
                                                    uint16_t maxReadLength)
 {
     uint16_t endpointIndex = emberAfGetDynamicIndexFromEndpoint(endpoint);
 
-    EmberAfStatus ret = EMBER_ZCL_STATUS_FAILURE;
+    Status ret = Status::Failure;
 
     if ((endpointIndex < CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT) && (gDevices[endpointIndex] != nullptr))
     {
@@ -268,12 +269,12 @@ EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint, ClusterI
     return ret;
 }
 
-EmberAfStatus emberAfExternalAttributeWriteCallback(EndpointId endpoint, ClusterId clusterId,
+Status emberAfExternalAttributeWriteCallback(EndpointId endpoint, ClusterId clusterId,
                                                     const EmberAfAttributeMetadata * attributeMetadata, uint8_t * buffer)
 {
     uint16_t endpointIndex = emberAfGetDynamicIndexFromEndpoint(endpoint);
 
-    EmberAfStatus ret = EMBER_ZCL_STATUS_FAILURE;
+    Status ret = Status::Failure;
 
     // ChipLogProgress(DeviceLayer, "emberAfExternalAttributeWriteCallback: ep=%d", endpointIndex);
 
